@@ -108,9 +108,23 @@ void AVoxelActor::GenerateChunk()
 			}
 		}
 	}
+
+	ApplyMaterials();
 }
 
 void AVoxelActor::UpdateMesh()
+{
+	TArray<FMeshSection> meshSections = GenerateMeshSections();
+
+	proceduralComponent->ClearAllMeshSections();
+	for (int i = 0; i < meshSections.Num(); i++)
+	{
+		if (meshSections[i].Vertices.Num() > 0)
+			proceduralComponent->CreateMeshSection(i, meshSections[i].Vertices, meshSections[i].Triangles, meshSections[i].Normals, meshSections[i].UVs, meshSections[i].VertexColors, meshSections[i].Tangents, true);
+	}
+}
+
+TArray<FMeshSection> AVoxelActor::GenerateMeshSections()
 {
 	TArray<FMeshSection> meshSections;
 	meshSections.SetNum(Materials.Num());
@@ -123,19 +137,19 @@ void AVoxelActor::UpdateMesh()
 			for (int32 z = 0; z < chunkZElements; z++)
 			{
 				int32 index = x + (y * chunkLineElements) + (z * chunkLineElementsP2);
-				int32 meshIndex = chunkFields[index].type;
+				int32 voxelType = chunkFields[index].type;
 
-				if (meshIndex > 0)
+				if (voxelType > 0)
 				{
-					meshIndex--;
+					voxelType--;
 
-					TArray<FVector> &Vertices = meshSections[meshIndex].Vertices;
-					TArray<int32> &Triangles = meshSections[meshIndex].Triangles;
-					TArray<FVector> &Normals = meshSections[meshIndex].Normals;
-					TArray<FVector2D> &UVs = meshSections[meshIndex].UVs;
-					TArray<FColor> &VertexColors = meshSections[meshIndex].VertexColors;
-					TArray<FProcMeshTangent> &Tangents = meshSections[meshIndex].Tangents;
-					int32 elementId = meshSections[meshIndex].elementId;
+					TArray<FVector> &Vertices = meshSections[voxelType].Vertices;
+					TArray<int32> &Triangles = meshSections[voxelType].Triangles;
+					TArray<FVector> &Normals = meshSections[voxelType].Normals;
+					TArray<FVector2D> &UVs = meshSections[voxelType].UVs;
+					TArray<FColor> &VertexColors = meshSections[voxelType].VertexColors;
+					TArray<FProcMeshTangent> &Tangents = meshSections[voxelType].Tangents;
+					int32 elementId = meshSections[voxelType].elementId;
 
 					// add faces, vertices, UVs and Normals
 					int triangle_num = 0;
@@ -144,7 +158,7 @@ void AVoxelActor::UpdateMesh()
 						int newIndex = index + bMask[i].X + (bMask[i].Y * chunkLineElements) + (bMask[i].Z * chunkLineElementsP2);
 						bool flag = false;
 
-						if (meshIndex >= 20)
+						if (voxelType >= 20)
 							flag = true;
 						else if (
 							(x + bMask[i].X < chunkLineElements) &&
@@ -242,25 +256,23 @@ void AVoxelActor::UpdateMesh()
 						}
 					}
 					el_num += triangle_num;
-					meshSections[meshIndex].elementId += triangle_num;
+					meshSections[voxelType].elementId += triangle_num;
 				}
 			}
 		}
 	}
 
-	proceduralComponent->ClearAllMeshSections();
-	for (int i = 0; i < meshSections.Num(); i++)
-	{
-		if (meshSections[i].Vertices.Num() > 0)
-			proceduralComponent->CreateMeshSection(i, meshSections[i].Vertices, meshSections[i].Triangles, meshSections[i].Normals, meshSections[i].UVs, meshSections[i].VertexColors, meshSections[i].Tangents, true);
-	}
+	return meshSections;
+}
 
-	int s = 0;
-	while (s < Materials.Num())
+void AVoxelActor::ApplyMaterials()
+{
+	int i = 0;
+	while (i < Materials.Num())
 	{
 		float z = proceduralComponent->GetOwner()->GetActorLocation().Z;
-		proceduralComponent->SetMaterial(s, Materials[s]);
-		s++;
+		proceduralComponent->SetMaterial(i, Materials[i]);
+		i++;
 	}
 }
 

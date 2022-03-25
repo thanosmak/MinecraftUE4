@@ -336,21 +336,4 @@ void AMinecraftUE4Character::performLineTrace()
 		FVector ActorHitLocation = HitVoxel->GetActorLocation();
 		UE_LOG(LogTemp, Warning, TEXT("Line trace has hit block with loc: %s"), *ActorHitLocation.ToString());
 	}
-
-	// Voxel = Cast<AVoxelActor>(ActorHit);
-	// if (Voxel != nullptr && ActorHit != nullptr)
-	// {
-	// 	FVector ActorHitLocation = ActorHit->GetActorLocation();
-	// 	UE_LOG(LogTemp, Warning, TEXT("Line trace has hit block with loc: %s"), *ActorHitLocation.ToString());
-	// 	Voxel->setPlaceholderVoxel(ActorHitLocation);
-	// }
-	// sVoxel(LineTraceEnd);
-
-	// Do work if we hit a voxel to interact
-	// if (Voxel != nullptr)
-	// {
-	// 	ActorHit->GetActorLocation();
-
-	// 	UE_LOG(LogTemp, Warning, TEXT("Line trace has hit block with loc: %s"), *LineTraceEnd.ToString());
-	// }
 }

@@ -98,4 +98,9 @@ public:
 	void GenerateChunk();
 
 	void UpdateMesh();
+
+private:
+	TArray<FMeshSection> GenerateMeshSections();
+
+	void ApplyMaterials();
 };

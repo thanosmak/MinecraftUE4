@@ -29,7 +29,7 @@ private:
 
 	AVoxelActor *Voxel;
 
-	void setPlaceHolderBlock();
+	void SetPlaceHolderBlock();
 
 	UPROPERTY()
 	AActor *PlaceholderBlock;

@@ -32,10 +32,10 @@ void UPlayerHandler::BeginPlay()
 void UPlayerHandler::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	setPlaceHolderBlock();
+	SetPlaceHolderBlock();
 }
 
-void UPlayerHandler::setPlaceHolderBlock()
+void UPlayerHandler::SetPlaceHolderBlock()
 {
 	FVector PlayerLocation;
 	FRotator PlayerRotator;
